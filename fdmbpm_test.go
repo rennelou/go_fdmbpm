@@ -6,9 +6,23 @@ import (
 	"github.com/rennelou/go_fdmbpm/types"
 )
 
-const _NX = 1024
+func TestRecurrenceForm(t *testing.T) {
+	nx := 3
+	w := types.NewWaveguide(0, nx, 0, 1)
+	d := []complex128{1, 1, 1}
+	w.SInitialize(2)
 
-func TestHello(t *testing.T) {
-	f := types.NewRecurrenceForm(260, _NX, 2048, 1024)
-	_ = f.GetAlphasBetas(make([]complex128, _NX-1), 0)
+	expected := []types.ComplexTupla{
+		{Alpha: complex(0.5, 0), Beta: complex(0.5, 0)},
+		{Alpha: complex(1/1.5, 0), Beta: complex(1, 0)},
+		{Alpha: complex(0, 0), Beta: complex(2/(2-(1/1.5)), 0)},
+	}
+
+	got := types.GetAlphasBetas(w, d, 0)
+
+	for i := 0; i < len(got); i++ {
+		if !got[i].IsEquals(expected[i]) {
+			t.Errorf("got %v; expected %v", got, expected)
+		}
+	}
 }

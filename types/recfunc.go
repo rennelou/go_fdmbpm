@@ -12,8 +12,8 @@ type RecFunc struct {
 }
 
 // NewRecFunc ...
-func NewRecFunc(size int, initialValue IValue, kernel func(int, IValue) IValue) RecFunc {
-	return RecFunc{kernel, 0, size, initialValue}
+func NewRecFunc(numberOfLoops int, initialValue IValue, kernel func(int, IValue) IValue) RecFunc {
+	return RecFunc{kernel, 0, numberOfLoops, initialValue}
 }
 
 // ExecRecFunc ...
@@ -23,11 +23,11 @@ func (p RecFunc) ExecRecFunc() interface{} {
 		it = it.getNext()
 	}
 
-	return p.value
+	return it.value
 }
 
 func (p RecFunc) hasNext() bool {
-	return p.index < p.size-1
+	return p.index < p.size
 }
 
 func (p RecFunc) getNext() RecFunc {
