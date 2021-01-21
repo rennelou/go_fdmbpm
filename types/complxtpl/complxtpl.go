@@ -1,8 +1,10 @@
-package types
+package complxtpl
 
 import "math"
 
-// ComplexTupla ...
+//go:generate gofp -destination complexfp.go -pkg complxtpl -type "complex128"
+
+//go:generate gofp -destination complxtplfp.go -pkg complxtpl -type "ComplexTupla"
 type ComplexTupla struct {
 	Alpha complex128
 	Beta  complex128

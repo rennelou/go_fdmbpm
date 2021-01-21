@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/rennelou/go_fdmbpm/types"
+	"github.com/rennelou/go_fdmbpm/types/complxtpl"
 )
 
 func TestRecurrenceForm(t *testing.T) {
@@ -12,7 +13,7 @@ func TestRecurrenceForm(t *testing.T) {
 	d := []complex128{1, 1, 1}
 	w.SInitialize(2)
 
-	expected := []types.ComplexTupla{
+	expected := []complxtpl.ComplexTupla{
 		{Alpha: complex(0.5, 0), Beta: complex(0.5, 0)},
 		{Alpha: complex(1/1.5, 0), Beta: complex(1, 0)},
 		{Alpha: complex(0, 0), Beta: complex(2/(2-(1/1.5)), 0)},
