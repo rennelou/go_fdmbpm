@@ -52,7 +52,7 @@ func (w Waveguide) Getabcs(zIndex int) []ABC {
 	boundaryCondition := complex(0, 0)
 	result := make([]ABC, 0)
 
-	if w.NX > 5 {
+	if w.NX > 4 {
 		result = append(result, ABC{complex(0, 0), w.s[zIndex][0] - boundaryCondition, complex(1, 0)})
 
 		for i := 2; i < w.NX-2; i++ {
