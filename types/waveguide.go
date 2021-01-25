@@ -47,18 +47,20 @@ func (w Waveguide) SInitialize(n float64) {
 	}
 }
 
-// Getabcs ...
+// Getabcs retorna vazio para todas as geometrias com menos de 5 steps
 func (w Waveguide) Getabcs(zIndex int) []ABC {
 	boundaryCondition := complex(0, 0)
-	result := []ABC{
-		{complex(0, 0), w.s[zIndex][0] - boundaryCondition, complex(1, 0)},
-	}
+	result := make([]ABC, 0)
 
-	for i := 1; i < w.NX-1; i++ {
-		result = append(result, ABC{complex(1, 0), w.s[zIndex][i] - boundaryCondition, complex(1, 0)})
-	}
+	if w.NX > 5 {
+		result = append(result, ABC{complex(0, 0), w.s[zIndex][0] - boundaryCondition, complex(1, 0)})
 
-	result = append(result, ABC{complex(1, 0), w.s[zIndex][w.NX-1] - boundaryCondition, complex(0, 0)})
+		for i := 2; i < w.NX-2; i++ {
+			result = append(result, ABC{complex(1, 0), w.s[zIndex][i] - boundaryCondition, complex(1, 0)})
+		}
+
+		result = append(result, ABC{complex(1, 0), w.s[zIndex][w.NX-2] - boundaryCondition, complex(0, 0)})
+	}
 
 	return result
 }

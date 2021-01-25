@@ -11,6 +11,7 @@ func TestRecurrenceForm(t *testing.T) {
 	nx := 3
 	w := types.NewWaveguide(0, nx, 0, 1)
 	d := []complex128{1, 1, 1}
+	zIndex := 0
 	w.SInitialize(2)
 
 	expected := []complxtpl.ComplexTupla{
@@ -19,7 +20,11 @@ func TestRecurrenceForm(t *testing.T) {
 		{Alpha: complex(0, 0), Beta: complex(2/(2-(1/1.5)), 0)},
 	}
 
-	got := types.GetAlphasBetas(w, d, 0)
+	got := types.GetAlphasBetas(w.Getabcs(zIndex), d)
+
+	if len(got) < 1 {
+		t.Errorf("got is empty")
+	}
 
 	for i := 0; i < len(got); i++ {
 		if !got[i].IsEquals(expected[i]) {
