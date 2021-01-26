@@ -8,7 +8,11 @@ import (
 )
 
 func TestFDMBPM(t *testing.T) {
-	w := GetWaveguideMock(0, 5, 0, 1)
+	w := types.NewWaveguide(0, 5, 0, 1)
+	SInitialize(w, 2)
+	QInitialize(w, 3)
+	QBoundaryInitialize(w, 1)
+
 	eBoundary := GetOnes(5)
 	zIndex := 0
 	got := types.FDMBPM(w, eBoundary)
@@ -63,9 +67,9 @@ func TestDArraysSizes(t *testing.T) {
 
 func GetWaveguideMock(_dx int, _nx int, _dz int, _nz int) types.Waveguide {
 	w := types.NewWaveguide(_dx, _nx, _dz, _nz)
-	SInitialize(w, 2)
-	QInitialize(w, 3)
-	QBoundaryInitialize(w, 1)
+	SInitialize(w, 0)
+	QInitialize(w, 0)
+	QBoundaryInitialize(w, 0)
 
 	return w
 }
