@@ -48,12 +48,15 @@ func (w Waveguide) Getabcs(zIndex int) []ABC {
 	result := make([]ABC, 0)
 
 	if w.NX >= MINIMALSTEP {
+		// okamoto 7.108a
 		result = append(result, ABC{complex(0, 0), w.S[zIndex][0] - boundaryCondition, complex(1, 0)})
 
 		for i := 2; i < w.NX-2; i++ {
+			// okamoto 7.108b
 			result = append(result, ABC{complex(1, 0), w.S[zIndex][i] - boundaryCondition, complex(1, 0)})
 		}
 
+		// okamoto 7.108c
 		result = append(result, ABC{complex(1, 0), w.S[zIndex][w.NX-2] - boundaryCondition, complex(0, 0)})
 	}
 
