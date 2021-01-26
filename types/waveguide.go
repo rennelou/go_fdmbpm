@@ -26,7 +26,6 @@ type ABC struct {
 func NewWaveguide(_dx int, _nx int, _dz int, _nz int) Waveguide {
 	_s := make([][]complex128, _nz)
 	_q := make([][]complex128, _nz)
-	_qBoundary := make([]complex128, _nx)
 
 	for i := 0; i < _nz; i++ {
 		_s[i] = make([]complex128, _nx)
@@ -34,13 +33,12 @@ func NewWaveguide(_dx int, _nx int, _dz int, _nz int) Waveguide {
 	}
 
 	return Waveguide{
-		DX:        _dx,
-		NX:        _nx,
-		DZ:        _dz,
-		NZ:        _nz,
-		S:         _s,
-		Q:         _q,
-		QBoundary: _qBoundary,
+		DX: _dx,
+		NX: _nx,
+		DZ: _dz,
+		NZ: _nz,
+		S:  _s,
+		Q:  _q,
 	}
 }
 
