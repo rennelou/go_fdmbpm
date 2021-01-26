@@ -5,14 +5,15 @@ import (
 )
 
 // FDMBPM ...
-func FDMBPM(w Waveguide, dInitials []complex128) [][]complex128 {
+func FDMBPM(w Waveguide, eBoundary []complex128) [][]complex128 {
 
 	result := make([][]complex128, w.NZ)
-	ds := dInitials
+	ds := GetD(eBoundary, w.QBoundary)
+
 	for i := 0; i < w.NZ; i++ {
 		abcs := w.Getabcs(i)
 		es := GetRecurrenceForm(GetAlphasBetas(abcs, ds))
-		ds = GetD(es, w.q[i])
+		ds = GetD(es, w.Q[i])
 
 		result[i] = es
 	}
@@ -24,25 +25,45 @@ func FDMBPM(w Waveguide, dInitials []complex128) [][]complex128 {
 func GetRecurrenceForm(alphasBetas []complxtpl.ComplexTupla) []complex128 {
 	rev := complxtpl.ReverseComplexTuplas(alphasBetas)
 
-	eList := make([]complex128, 0)
+	es := make([]complex128, 0)
 	e := complex(0, 0)
 	for _, value := range rev {
-		e, eList = func(lastE complex128, list []complex128) (complex128, []complex128) {
+		e, es = func(lastE complex128, list []complex128) (complex128, []complex128) {
 
 			_e := value.Alpha*lastE + value.Beta // okamoto 7.110
 
 			return _e, append(list, _e)
-		}(e, eList)
+		}(e, es)
 	}
 
+	es = complxtpl.Reversecomplex128s(es)
+
 	boundaryCondition1, boundaryCondition2 := complex(0, 0), complex(0, 0)
+	es = append(complxtpl.Mapcomplex128(func(c complex128) complex128 {
+		return c * boundaryCondition1
+	}, head(es)), es...) // okamoto 7.106
 
-	eList = append(eList, eList[len(eList)-1]*boundaryCondition1) // okamoto 7.106
+	es = append(es, complxtpl.Mapcomplex128(func(c complex128) complex128 {
+		return c * boundaryCondition2
+	}, last(es))...) // okamoto 7.105
 
-	eList = complxtpl.Reversecomplex128s(eList)
-	eList = append(eList, eList[len(eList)-1]*boundaryCondition2) // okamoto 7.105
+	return es
+}
 
-	return complxtpl.Reversecomplex128s(eList)
+func head(l []complex128) []complex128 {
+	if len(l) < 1 {
+		return make([]complex128, 0)
+	}
+
+	return []complex128{l[0]}
+}
+
+func last(l []complex128) []complex128 {
+	if len(l) < 1 {
+		return make([]complex128, 0)
+	}
+
+	return []complex128{l[len(l)-1]}
 }
 
 // GetAlphasBetas ...
@@ -69,10 +90,13 @@ func GetAlphasBetas(abcs []ABC, ds []complex128) []complxtpl.ComplexTupla {
 
 // GetD es e qs precisam ter mesma dimensão
 func GetD(es []complex128, qs []complex128) []complex128 {
-	var result []complex128
-	for i, q := range complxtpl.DropLastcomplex128(complxtpl.Restcomplex128(qs)) {
+	result := make([]complex128, 0)
 
-		result = append(result, es[i]+q*es[i+1]+es[i+2]) // okamoto 7.97
+	if len(es) == len(qs) && len(es) >= MINIMALSTEP {
+		for i, q := range complxtpl.DropLastcomplex128(complxtpl.Restcomplex128(qs)) {
+
+			result = append(result, es[i]+q*es[i+1]+es[i+2]) // okamoto 7.97
+		}
 	}
 	return result
 }

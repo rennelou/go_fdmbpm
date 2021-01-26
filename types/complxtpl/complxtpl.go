@@ -11,8 +11,17 @@ type ComplexTupla struct {
 }
 
 // IsEquals ...
-func (c1 ComplexTupla) IsEquals(c2 ComplexTupla) bool {
-	return (complexAbs(c1.Alpha-c2.Alpha) < 1e-6) && complexAbs(c1.Beta-c2.Beta) < 1e-6
+func IsEquals(c1 []complex128, c2 []complex128) bool {
+	if len(c1) != len(c2) {
+		return false
+	}
+	for i := 0; i < len(c1); i++ {
+		if complexAbs(c1[i])-complexAbs(c2[i]) > 1e-6 {
+			return false
+		}
+	}
+
+	return true
 }
 
 func complexAbs(x complex128) float64 { return math.Hypot(real(x), imag(x)) }

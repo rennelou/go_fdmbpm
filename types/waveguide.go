@@ -1,5 +1,7 @@
 package types
 
+const MINIMALSTEP = 5
+
 // Waveguide ...
 type Waveguide struct {
 	DX int
@@ -7,8 +9,10 @@ type Waveguide struct {
 	DZ int
 	NZ int
 
-	s [][]complex128
-	q [][]complex128
+	S [][]complex128
+	Q [][]complex128
+
+	QBoundary []complex128
 }
 
 // ABC ...
@@ -22,6 +26,7 @@ type ABC struct {
 func NewWaveguide(_dx int, _nx int, _dz int, _nz int) Waveguide {
 	_s := make([][]complex128, _nz)
 	_q := make([][]complex128, _nz)
+	_qBoundary := make([]complex128, _nx)
 
 	for i := 0; i < _nz; i++ {
 		_s[i] = make([]complex128, _nx)
@@ -29,21 +34,13 @@ func NewWaveguide(_dx int, _nx int, _dz int, _nz int) Waveguide {
 	}
 
 	return Waveguide{
-		DX: _dx,
-		NX: _nx,
-		DZ: _dz,
-		NZ: _nz,
-		s:  _s,
-		q:  _q,
-	}
-}
-
-// SInitialize ...
-func (w Waveguide) SInitialize(n float64) {
-	for i := 0; i < w.NZ; i++ {
-		for j := 0; j < w.NX; j++ {
-			w.s[i][j] = complex(n, 0)
-		}
+		DX:        _dx,
+		NX:        _nx,
+		DZ:        _dz,
+		NZ:        _nz,
+		S:         _s,
+		Q:         _q,
+		QBoundary: _qBoundary,
 	}
 }
 
@@ -52,14 +49,14 @@ func (w Waveguide) Getabcs(zIndex int) []ABC {
 	boundaryCondition := complex(0, 0)
 	result := make([]ABC, 0)
 
-	if w.NX > 4 {
-		result = append(result, ABC{complex(0, 0), w.s[zIndex][0] - boundaryCondition, complex(1, 0)})
+	if w.NX >= MINIMALSTEP {
+		result = append(result, ABC{complex(0, 0), w.S[zIndex][0] - boundaryCondition, complex(1, 0)})
 
 		for i := 2; i < w.NX-2; i++ {
-			result = append(result, ABC{complex(1, 0), w.s[zIndex][i] - boundaryCondition, complex(1, 0)})
+			result = append(result, ABC{complex(1, 0), w.S[zIndex][i] - boundaryCondition, complex(1, 0)})
 		}
 
-		result = append(result, ABC{complex(1, 0), w.s[zIndex][w.NX-2] - boundaryCondition, complex(0, 0)})
+		result = append(result, ABC{complex(1, 0), w.S[zIndex][w.NX-2] - boundaryCondition, complex(0, 0)})
 	}
 
 	return result
