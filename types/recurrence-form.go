@@ -7,12 +7,12 @@ import (
 // FDMBPM ...
 func FDMBPM(w Waveguide, eBoundary []complex128) [][]complex128 {
 
-	result := make([][]complex128, w.NZ)
+	result := make([][]complex128, w.ZSteps)
 	result[0] = eBoundary
 
 	ds := GetD(eBoundary, w.Q[0])
 
-	for i := 1; i < w.NZ; i++ {
+	for i := 1; i < w.ZSteps; i++ {
 		abcs := w.Getabcs(i)
 		es := GetRecurrenceForm(GetAlphasBetas(abcs, ds))
 		ds = GetD(es, w.Q[i])
