@@ -1,6 +1,7 @@
 package go_fdmbpm
 
 import (
+	"math"
 	"testing"
 
 	"github.com/rennelou/go_fdmbpm/types"
@@ -10,7 +11,7 @@ import (
 func TestFDMBPM(t *testing.T) {
 	w := types.NewWaveguide(10, 2, 10, 5, 1550.0, 3.4757, 0.2)
 
-	eBoundary := GetOnes(5)
+	eBoundary := GetOnes(int(math.Round(10 / 2)))
 	got := types.FDMBPM(w, eBoundary)
 
 	expected := []complex128{0, 3.5, 5, 3.5, 0}
