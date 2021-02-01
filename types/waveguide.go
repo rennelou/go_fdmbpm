@@ -14,8 +14,6 @@ type Waveguide struct {
 
 	S [][]complex128
 	Q [][]complex128
-
-	QBoundary []complex128
 }
 
 // ABC ...
