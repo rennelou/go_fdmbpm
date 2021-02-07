@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/rennelou/go_fdmbpm/types"
-	"github.com/rennelou/go_fdmbpm/types/complxtpl"
+	"github.com/rennelou/go_fdmbpm/types/cmplxfp"
 )
 
 func TestFDMBPM(t *testing.T) {
@@ -15,7 +15,7 @@ func TestFDMBPM(t *testing.T) {
 	got := types.FDMBPM(w, eBoundary)
 
 	expected := []complex128{0, 3.5, 5, 3.5, 0}
-	if complxtpl.IsEquals(got[1], expected) {
+	if cmplxfp.IsEquals(got[1], expected) {
 		t.Errorf("got %v, expected %v", got[1], expected)
 	}
 }

@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/rennelou/go_fdmbpm/types/complxtpl"
+	"github.com/rennelou/go_fdmbpm/types/cmplxfp"
 )
 
 // FDMBPM ...
@@ -24,8 +24,8 @@ func FDMBPM(w Waveguide, eBoundary []complex128) [][]complex128 {
 }
 
 // GetRecurrenceForm ...
-func GetRecurrenceForm(alphasBetas []complxtpl.ComplexTupla) []complex128 {
-	rev := complxtpl.ReverseComplexTuplas(alphasBetas)
+func GetRecurrenceForm(alphasBetas []cmplxfp.AlphaBeta) []complex128 {
+	rev := cmplxfp.ReverseAlphaBetas(alphasBetas)
 
 	es := make([]complex128, 0)
 	e := complex(0, 0)
@@ -38,14 +38,14 @@ func GetRecurrenceForm(alphasBetas []complxtpl.ComplexTupla) []complex128 {
 		}(e, es)
 	}
 
-	es = complxtpl.Reversecomplex128s(es)
+	es = cmplxfp.Reversecomplex128s(es)
 
 	boundaryCondition1, boundaryCondition2 := complex(0, 0), complex(0, 0)
-	es = append(complxtpl.Mapcomplex128(func(c complex128) complex128 {
+	es = append(cmplxfp.Mapcomplex128(func(c complex128) complex128 {
 		return c * boundaryCondition1
 	}, head(es)), es...) // okamoto 7.106
 
-	es = append(es, complxtpl.Mapcomplex128(func(c complex128) complex128 {
+	es = append(es, cmplxfp.Mapcomplex128(func(c complex128) complex128 {
 		return c * boundaryCondition2
 	}, last(es))...) // okamoto 7.105
 
@@ -69,13 +69,13 @@ func last(l []complex128) []complex128 {
 }
 
 // GetAlphasBetas ...
-func GetAlphasBetas(abcs []ABC, ds []complex128) []complxtpl.ComplexTupla {
+func GetAlphasBetas(abcs []ABC, ds []complex128) []cmplxfp.AlphaBeta {
 
-	result := make([]complxtpl.ComplexTupla, 0)
+	result := make([]cmplxfp.AlphaBeta, 0)
 	alpha := complex(0, 0)
 	beta := complex(0, 0)
 	for i, abc := range abcs {
-		alpha, beta, result = func(lastAlpha complex128, lastBeta complex128, list []complxtpl.ComplexTupla) (complex128, complex128, []complxtpl.ComplexTupla) {
+		alpha, beta, result = func(lastAlpha complex128, lastBeta complex128, list []cmplxfp.AlphaBeta) (complex128, complex128, []cmplxfp.AlphaBeta) {
 			a := abc.A
 			b := abc.B
 			c := abc.C
@@ -83,7 +83,7 @@ func GetAlphasBetas(abcs []ABC, ds []complex128) []complxtpl.ComplexTupla {
 			_alpha := c / (b - a*lastAlpha)                 // okamoto 7.112a
 			_beta := (ds[i] + a*lastBeta) / (b - lastAlpha) // okamoto 7.112b
 
-			return _alpha, _beta, append(list, complxtpl.ComplexTupla{Alpha: _alpha, Beta: _beta})
+			return _alpha, _beta, append(list, cmplxfp.AlphaBeta{Alpha: _alpha, Beta: _beta})
 		}(alpha, beta, result)
 	}
 
@@ -95,7 +95,7 @@ func GetD(es []complex128, qs []complex128) []complex128 {
 	result := make([]complex128, 0)
 
 	if len(es) == len(qs) && len(es) >= MINIMALSTEP {
-		for i, q := range complxtpl.DropLastcomplex128(complxtpl.Restcomplex128(qs)) {
+		for i, q := range cmplxfp.DropLastcomplex128(cmplxfp.Restcomplex128(qs)) {
 
 			result = append(result, es[i]+q*es[i+1]+es[i+2]) // okamoto 7.97
 		}

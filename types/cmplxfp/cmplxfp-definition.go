@@ -1,11 +1,11 @@
-package complxtpl
+package cmplxfp
 
 import "math"
 
-//go:generate gofp -destination complexfp.go -pkg complxtpl -type "complex128"
+//go:generate gofp -destination complexfp.go -pkg cmplxfp -type "complex128"
 
-//go:generate gofp -destination complxtplfp.go -pkg complxtpl -type "ComplexTupla"
-type ComplexTupla struct {
+//go:generate gofp -destination complxtplfp.go -pkg cmplxfp -type "AlphaBeta"
+type AlphaBeta struct {
 	Alpha complex128
 	Beta  complex128
 }
