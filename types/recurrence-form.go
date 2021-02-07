@@ -42,32 +42,30 @@ func GetRecurrenceForm(alphasBetas []cmplxfp.AlphaBeta) []complex128 {
 
 	// okamoto 7.106
 	firstElement := cmplxfp.Multiplycomplex128(cmplxfp.Headcomplex128(es), boundaryCondition1)
-	es = append(firstElement, es...)
 
 	// okamoto 7.105
 	lastElement := cmplxfp.Multiplycomplex128(cmplxfp.Lastcomplex128(es), boundaryCondition2)
-	es = append(es, lastElement...)
 
-	return es
+	return append(firstElement, append(es, lastElement...)...)
 }
 
 // GetAlphasBetas ...
 func GetAlphasBetas(abcs []ABC, ds []complex128) []cmplxfp.AlphaBeta {
 
 	result := make([]cmplxfp.AlphaBeta, 0)
-	alpha := complex(0, 0)
-	beta := complex(0, 0)
+	value := cmplxfp.AlphaBeta{Alpha: complex(0, 0), Beta: complex(0, 0)}
 	for i, abc := range abcs {
-		alpha, beta, result = func(lastAlpha complex128, lastBeta complex128, list []cmplxfp.AlphaBeta) (complex128, complex128, []cmplxfp.AlphaBeta) {
+		value, result = func(lastValue cmplxfp.AlphaBeta, list []cmplxfp.AlphaBeta) (cmplxfp.AlphaBeta, []cmplxfp.AlphaBeta) {
 			a := abc.A
 			b := abc.B
 			c := abc.C
 
-			_alpha := c / (b - a*lastAlpha)                 // okamoto 7.112a
-			_beta := (ds[i] + a*lastBeta) / (b - lastAlpha) // okamoto 7.112b
+			_alpha := c / (b - a*lastValue.Alpha)                       // okamoto 7.112a
+			_beta := (ds[i] + a*lastValue.Beta) / (b - lastValue.Alpha) // okamoto 7.112b
 
-			return _alpha, _beta, append(list, cmplxfp.AlphaBeta{Alpha: _alpha, Beta: _beta})
-		}(alpha, beta, result)
+			newValue := cmplxfp.AlphaBeta{Alpha: _alpha, Beta: _beta}
+			return newValue, append(list, newValue)
+		}(value, result)
 	}
 
 	return result
