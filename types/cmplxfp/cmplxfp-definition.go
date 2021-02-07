@@ -25,3 +25,25 @@ func IsEquals(c1 []complex128, c2 []complex128) bool {
 }
 
 func complexAbs(x complex128) float64 { return math.Hypot(real(x), imag(x)) }
+
+func Multiplycomplex128(l []complex128, c complex128) []complex128 {
+	return Mapcomplex128(func(a complex128) complex128 {
+		return a * c
+	}, l)
+}
+
+func Headcomplex128(l []complex128) []complex128 {
+	if len(l) < 1 {
+		return make([]complex128, 0)
+	}
+
+	return []complex128{l[0]}
+}
+
+func Lastcomplex128(l []complex128) []complex128 {
+	if len(l) < 1 {
+		return make([]complex128, 0)
+	}
+
+	return []complex128{l[len(l)-1]}
+}

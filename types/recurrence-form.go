@@ -41,31 +41,14 @@ func GetRecurrenceForm(alphasBetas []cmplxfp.AlphaBeta) []complex128 {
 	es = cmplxfp.Reversecomplex128s(es)
 
 	boundaryCondition1, boundaryCondition2 := complex(0, 0), complex(0, 0)
-	es = append(cmplxfp.Mapcomplex128(func(c complex128) complex128 {
-		return c * boundaryCondition1
-	}, head(es)), es...) // okamoto 7.106
 
-	es = append(es, cmplxfp.Mapcomplex128(func(c complex128) complex128 {
-		return c * boundaryCondition2
-	}, last(es))...) // okamoto 7.105
+	firstElement := cmplxfp.Multiplycomplex128(cmplxfp.Headcomplex128(es), boundaryCondition1)
+	es = append(firstElement, es...) // okamoto 7.106
+
+	lastElement := cmplxfp.Multiplycomplex128(cmplxfp.Lastcomplex128(es), boundaryCondition2)
+	es = append(es, lastElement...) // okamoto 7.105
 
 	return es
-}
-
-func head(l []complex128) []complex128 {
-	if len(l) < 1 {
-		return make([]complex128, 0)
-	}
-
-	return []complex128{l[0]}
-}
-
-func last(l []complex128) []complex128 {
-	if len(l) < 1 {
-		return make([]complex128, 0)
-	}
-
-	return []complex128{l[len(l)-1]}
 }
 
 // GetAlphasBetas ...
