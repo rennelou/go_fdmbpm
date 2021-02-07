@@ -23,17 +23,10 @@ type ABC struct {
 	C complex128
 }
 
-// NewWaveguide _uDX, _uDZ, _uXDelta, _uZDelta em micrometro
-func NewWaveguide(_uDX float64, _uXDelta float64, _uDZ float64, _uZDelta float64, k float64, n float64, alpha float64) Waveguide {
-	xSteps := int(math.Round(_uDX / _uXDelta))
-	zSteps := int(math.Round((_uDZ / _uZDelta)))
-
-	nXDelta := _uXDelta * 1000
-	nZDelta := _uZDelta * 1000
-
-	guidingSpace := complex(math.Sqrt(k)*math.Sqrt(nXDelta)*(math.Sqrt(n)-math.Sqrt(N0)), 0)
-	freeSpace := complex(0, 4*k*N0*math.Sqrt(nXDelta)/nZDelta)
-	loss := complex(0, 2*k*N0*math.Sqrt((nXDelta)*math.Sqrt(alpha)))
+// NewWaveguide ...
+func NewWaveguide(_DX float64, _XDelta float64, _DZ float64, _ZDelta float64, k float64, n float64, alpha float64) Waveguide {
+	xSteps := int(math.Round(_DX / _XDelta))
+	zSteps := int(math.Round((_DZ / _ZDelta)))
 
 	_s := make([][]complex128, zSteps)
 	_q := make([][]complex128, zSteps)
@@ -41,6 +34,10 @@ func NewWaveguide(_uDX float64, _uXDelta float64, _uDZ float64, _uZDelta float64
 	for i := 0; i < zSteps; i++ {
 		_s[i] = make([]complex128, xSteps)
 		_q[i] = make([]complex128, xSteps)
+
+		guidingSpace := complex(math.Sqrt(k)*math.Sqrt(_XDelta)*(math.Sqrt(n)-math.Sqrt(N0)), 0)
+		freeSpace := complex(0, 4*k*N0*math.Sqrt(_XDelta)/_ZDelta)
+		loss := complex(0, 2*k*N0*math.Sqrt((_XDelta)*math.Sqrt(alpha)))
 
 		for j := 0; j < xSteps; j++ {
 			_s[i][j] = complex(2, 0) - guidingSpace + freeSpace + loss  // okamoto 7.98

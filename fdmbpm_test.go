@@ -21,7 +21,7 @@ func TestFDMBPM(t *testing.T) {
 }
 
 func TestInsuficientSteps(t *testing.T) {
-	w := GetWaveguideMock(12, 4, 2.0, 1.0, 1550.0, 3.4757, 0.2)
+	w := GetWaveguideMock(12, 4, 2.0, 1.0, 1/1550.0, 3.4757, 0.2)
 	eBoundary := GetOnes(4)
 	got := types.FDMBPM(w, eBoundary)
 
