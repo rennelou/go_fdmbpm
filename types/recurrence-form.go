@@ -5,12 +5,12 @@ import (
 )
 
 // FDMBPM ...
-func FDMBPM(w Waveguide, eBoundary []complex128) [][]complex128 {
+func FDMBPM(w Waveguide, eInput []complex128) [][]complex128 {
 
 	result := make([][]complex128, w.ZSteps)
-	result[0] = eBoundary
+	result[0] = eInput
 
-	ds := GetD(eBoundary, w.Q[0])
+	ds := GetD(eInput, w.Q[0])
 
 	for i := 1; i < w.ZSteps; i++ {
 		abcs := w.Getabcs(i)
@@ -25,11 +25,9 @@ func FDMBPM(w Waveguide, eBoundary []complex128) [][]complex128 {
 
 // GetRecurrenceForm ...
 func GetRecurrenceForm(alphasBetas []cmplxfp.AlphaBeta) []complex128 {
-	rev := cmplxfp.ReverseAlphaBetas(alphasBetas)
-
 	es := make([]complex128, 0)
 	e := complex(0, 0)
-	for _, value := range rev {
+	for _, value := range cmplxfp.ReverseAlphaBetas(alphasBetas) {
 		e, es = func(lastE complex128, list []complex128) (complex128, []complex128) {
 
 			_e := value.Alpha*lastE + value.Beta // okamoto 7.110
@@ -42,11 +40,13 @@ func GetRecurrenceForm(alphasBetas []cmplxfp.AlphaBeta) []complex128 {
 
 	boundaryCondition1, boundaryCondition2 := complex(0, 0), complex(0, 0)
 
+	// okamoto 7.106
 	firstElement := cmplxfp.Multiplycomplex128(cmplxfp.Headcomplex128(es), boundaryCondition1)
-	es = append(firstElement, es...) // okamoto 7.106
+	es = append(firstElement, es...)
 
+	// okamoto 7.105
 	lastElement := cmplxfp.Multiplycomplex128(cmplxfp.Lastcomplex128(es), boundaryCondition2)
-	es = append(es, lastElement...) // okamoto 7.105
+	es = append(es, lastElement...)
 
 	return es
 }
