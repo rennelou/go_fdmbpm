@@ -4,25 +4,6 @@ import (
 	"github.com/rennelou/go_fdmbpm/types/cmplxfp"
 )
 
-// FDMBPM ...
-func FDMBPM(w Waveguide, eInput []complex128) [][]complex128 {
-
-	result := make([][]complex128, w.ZSteps)
-	result[0] = eInput
-
-	ds := GetD(eInput, w.Q[0])
-
-	for i := 1; i < w.ZSteps; i++ {
-		abcs := w.Getabcs(i)
-		es := GetRecurrenceForm(GetAlphasBetas(abcs, ds))
-		ds = GetD(es, w.Q[i])
-
-		result[i] = es
-	}
-
-	return result
-}
-
 // GetRecurrenceForm ...
 func GetRecurrenceForm(alphasBetas []cmplxfp.AlphaBeta) []complex128 {
 	es := make([]complex128, 0)

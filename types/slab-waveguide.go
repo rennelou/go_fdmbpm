@@ -7,8 +7,8 @@ import (
 const MINIMALSTEP = 5
 const N0 = complex(1, 0)
 
-// Waveguide ...
-type Waveguide struct {
+// SlabWaveguide ...
+type SlabWaveguide struct {
 	XSteps int
 	ZSteps int
 
@@ -23,8 +23,8 @@ type ABC struct {
 	C complex128
 }
 
-// NewWaveguide ...
-func NewWaveguide(_DX float64, _XDelta float64, _DZ float64, _ZDelta float64, k float64, n float64, alpha float64) Waveguide {
+// NewSlabWaveguide ...
+func NewSlabWaveguide(_DX float64, _XDelta float64, _DZ float64, _ZDelta float64, k float64, n float64, alpha float64) SlabWaveguide {
 	xSteps := int(math.Round(_DX / _XDelta))
 	zSteps := int(math.Round((_DZ / _ZDelta)))
 
@@ -45,7 +45,7 @@ func NewWaveguide(_DX float64, _XDelta float64, _DZ float64, _ZDelta float64, k 
 		}
 	}
 
-	return Waveguide{
+	return SlabWaveguide{
 		XSteps: xSteps,
 		ZSteps: zSteps,
 		S:      _s,
@@ -53,8 +53,27 @@ func NewWaveguide(_DX float64, _XDelta float64, _DZ float64, _ZDelta float64, k 
 	}
 }
 
+// FDMBPM ...
+func (w SlabWaveguide) FDMBPM(eInput []complex128) [][]complex128 {
+
+	result := make([][]complex128, w.ZSteps)
+	result[0] = eInput
+
+	ds := GetD(eInput, w.Q[0])
+
+	for i := 1; i < w.ZSteps; i++ {
+		abcs := w.Getabcs(i)
+		es := GetRecurrenceForm(GetAlphasBetas(abcs, ds))
+		ds = GetD(es, w.Q[i])
+
+		result[i] = es
+	}
+
+	return result
+}
+
 // Getabcs retorna vazio para todas as geometrias com menos de 5 steps
-func (w Waveguide) Getabcs(zIndex int) []ABC {
+func (w SlabWaveguide) Getabcs(zIndex int) []ABC {
 	boundaryCondition := complex(0, 0)
 	result := make([]ABC, 0)
 

@@ -9,10 +9,10 @@ import (
 )
 
 func TestFDMBPM(t *testing.T) {
-	w := types.NewWaveguide(10, 2, 10, 5, 1550.0, 3.4757, 0.2)
+	w := types.NewSlabWaveguide(10, 2, 10, 5, 1550.0, 3.4757, 0.2)
 
 	eBoundary := GetOnes(int(math.Round(10 / 2)))
-	got := types.FDMBPM(w, eBoundary)
+	got := w.FDMBPM(eBoundary)
 
 	expected := []complex128{0, 3.5, 5, 3.5, 0}
 	if cmplxfp.IsEquals(got[1], expected) {
@@ -23,7 +23,7 @@ func TestFDMBPM(t *testing.T) {
 func TestInsuficientSteps(t *testing.T) {
 	w := GetWaveguideMock(12, 4, 2.0, 1.0, 1/1550.0, 3.4757, 0.2)
 	eBoundary := GetOnes(4)
-	got := types.FDMBPM(w, eBoundary)
+	got := w.FDMBPM(eBoundary)
 
 	if len(got[1]) != 0 {
 		t.Errorf("got should be empty")
@@ -61,8 +61,8 @@ func TestDArraysSizes(t *testing.T) {
 	}
 }
 
-func GetWaveguideMock(_dx float64, _xSteps float64, _dz float64, _zSteps float64, k float64, n float64, alpha float64) types.Waveguide {
-	w := types.NewWaveguide(_dx, _xSteps, _dz, _zSteps, k, n, alpha)
+func GetWaveguideMock(_dx float64, _xSteps float64, _dz float64, _zSteps float64, k float64, n float64, alpha float64) types.SlabWaveguide {
+	w := types.NewSlabWaveguide(_dx, _xSteps, _dz, _zSteps, k, n, alpha)
 
 	return w
 }
