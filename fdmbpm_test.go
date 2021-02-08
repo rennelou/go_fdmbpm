@@ -9,7 +9,7 @@ import (
 )
 
 func TestFDMBPM(t *testing.T) {
-	w := types.NewSlabWaveguide(10, 2, 10, 5, 1550.0, 3.4757, 1, 0.2, complex(0, 0), complex(0, 0))
+	w := types.NewSlabWaveguide(10, 2, 10, 5, 1/1550.0, 3.4757, 1, 0.2, complex(1, 0), complex(1, 0))
 
 	eBoundary := GetOnes(int(math.Round(10 / 2)))
 	got := w.FDMBPM(eBoundary)
