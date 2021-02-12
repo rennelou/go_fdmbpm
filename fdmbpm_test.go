@@ -4,9 +4,22 @@ import (
 	"math"
 	"testing"
 
+	"github.com/Arafatk/glot"
 	"github.com/rennelou/go_fdmbpm/types"
 	"github.com/rennelou/go_fdmbpm/types/cmplxfp"
 )
+
+func TestPlot(t *testing.T) {
+	w := types.NewSlabWaveguide(10, 2, 10, 5, 1/1550.0, 3.4757, 1, 0.2, complex(1, 0), complex(1, 0))
+
+	eBoundary := GetOnes(int(math.Round(10 / 2)))
+	got := w.FDMBPM(eBoundary)
+
+	plot, _ := glot.NewPlot(2, false, false)
+	plot.AddPointGroup("eletric filed", "point", got)
+
+	plot.SavePlot("fdmbpm.png")
+}
 
 func TestFDMBPM(t *testing.T) {
 	w := types.NewSlabWaveguide(10, 2, 10, 5, 1/1550.0, 3.4757, 1, 0.2, complex(1, 0), complex(1, 0))
